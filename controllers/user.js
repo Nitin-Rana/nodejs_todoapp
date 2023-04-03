@@ -2,6 +2,7 @@ import { User } from "../models/user.js"
 import bcrypt from 'bcrypt'
 import jwt from 'jsonwebtoken'
 import { sendCookie } from "../utils/features.js"
+import ErrorHandler from "../middleware/error.js"
 
 export const logout = (req,res)=>{
     res
@@ -19,7 +20,7 @@ export const logout = (req,res)=>{
 export const login = async(req,res,next)=>{
     try {
         const {email,password} = req.body;
-        console.log(password);
+        //console.log(password);
         const user = await User.findOne({email}).select("+password"); //select is set as false in model for password
         //console.log(user.password);
 
@@ -37,11 +38,11 @@ export const login = async(req,res,next)=>{
     
 // }
 
-export const register = async (req,res)=>{
+export const register = async (req,res,next)=>{
     try {
         const {name,email,password} = req.body;
         let user = await User.findOne({email});
-
+        console.log(user);
         if(user) return next(new ErrorHandler("User already exists!", 404))
         const hashedPassword = await bcrypt.hash(password,10);
         user = await User.create({name,email,password: hashedPassword});
