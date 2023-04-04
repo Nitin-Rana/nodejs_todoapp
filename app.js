@@ -9,6 +9,7 @@ import cors from 'cors';
 
 config({path:"./data/config.env"})
 
+app.set('trust proxy', 1) // trust first proxy
 app.use(express.json())
 app.use(cookieParser());
 app.use(cors({
